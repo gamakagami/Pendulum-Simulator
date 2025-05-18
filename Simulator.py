@@ -319,7 +319,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         ax3.plot(t, E_total)
         ax3.set_xlabel('Time (s)')
         ax3.set_ylabel('Total Energy (J)')
-        ax3.set_title('Total energy vs Time')
+        ax3.set_title('Energy Dissipation Over Time')
 
         canvas_total_energy = FigureCanvasTkAgg(fig3, master=energy_loss_popup)
         canvas_total_energy.draw()

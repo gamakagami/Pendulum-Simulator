@@ -21,7 +21,7 @@ canvas1 = tk.Canvas(root, width=500, height=500, bg="black")
 canvas1.place(x=700, y=50)
 canvas1.create_text(250, 100, text="Double Pendulum", fill="white", font=("Comic Sans MS", 30))
 canvas1.create_text(250, 170, text="Simulation", fill="white", font=("Comic Sans MS", 30))
-img = Image.open("OIP.jpeg")
+img = Image.open(r"C:\Users\Rafael\Downloads\OIP.jpeg")
 img = img.resize((240, 200))
 tk_img = ImageTk.PhotoImage(img)
 canvas1.create_image(250, 340, image=tk_img)
@@ -310,16 +310,16 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         canvas_angular_velocities.draw()
         canvas_angular_velocities.get_tk_widget().place(x=0, y=0)
 
-    global show_total_energy
-    def show_total_energy():
+    global show_mechanical_energy
+    def show_mechanical_energy():
         energy_loss_popup = tk.Toplevel()
         energy_loss_popup.geometry(("700x500"))
-        energy_loss_popup.title("Total energy Graph")
+        energy_loss_popup.title("Mechanical energy Graph")
 
         fig3, ax3 = plt.subplots()
         ax3.plot(t, E_total)
         ax3.set_xlabel('Time (s)')
-        ax3.set_ylabel('Total Energy (J)')
+        ax3.set_ylabel('Mechanical Energy (J)')
         ax3.set_title('Energy Dissipation Over Time')
 
         canvas_total_energy = FigureCanvasTkAgg(fig3, master=energy_loss_popup)
@@ -551,10 +551,10 @@ show_angular_button.place(x=100, y=513)
 show_velocities_button = tk.Button(root, text="Show Angular Velocity", command=lambda: show_angular_velocities())
 show_velocities_button.place(x=250, y=513)
 
-show_energy_button = tk.Button(root, text="Show Total Energy", command=lambda: show_total_energy())
+show_energy_button = tk.Button(root, text="Show Mechanical Energy", command=lambda: show_mechanical_energy())
 show_energy_button.place(x=400, y=513)
 
 show_chaos_button = tk.Button(root, text="Show Chaos Analysis", command=lambda: show_chaos_analysis())
-show_chaos_button.place(x=530, y=513)
+show_chaos_button.place(x=560, y=513)
 
 root.mainloop()

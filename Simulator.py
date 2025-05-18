@@ -1,3 +1,4 @@
+
 import numpy as np
 import sympy as smp
 from scipy.integrate import odeint
@@ -381,19 +382,19 @@ def update_velocity2(value):
     slider_value13.config(text=f"{value} rad/s")
 
 def set_default_settings():
-    slider1.set(1)
-    slider2.set(1)
-    slider3.set(1)
-    slider4.set(0.5)
-    slider5.set(1)
-    slider6.set(0.5)
+    slider1.set(1.0)
+    slider2.set(1.0)
+    slider3.set(1.0)
+    slider4.set(0.1)
+    slider5.set(1.0)
+    slider6.set(0.1)
     slider7.set(0.05)
     slider8.set(0.05)
     slider9.set(0.1)
-    slider10.set(0.5)
-    slider11.set(-0.5)
-    slider12.set(0)
-    slider13.set(0)    
+    slider10.set(np.pi/4)
+    slider11.set(-np.pi/4)
+    slider12.set(0.0)
+    slider13.set(0.0)
 
 def reset_settings():
     slider1.set(0)
@@ -416,25 +417,25 @@ def stop_animation():
 label1 = tk.Label(root, text="Mass of first pendulum:", font=("Comic Sans MS", 10))
 label1.place(x=100, y=50)
 
-slider1 = tk.Scale(root, from_=0.1, to=5.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass1)
+slider1 = tk.Scale(root, from_=0.01, to=5.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass1)
 slider1.place(x=320, y=53)
 
-slider_value1 = tk.Label(root, text="0.1 kg", font=("Comic Sans MS", 10))
+slider_value1 = tk.Label(root, text="0.01 kg", font=("Comic Sans MS", 10))
 slider_value1.place(x=430, y=50)
 
 label2 = tk.Label(root, text="Mass of second pendulum:", font=("Comic Sans MS", 10))
 label2.place(x=100, y=81)
 
-slider2 = tk.Scale(root, from_=0.1, to=5.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass2)
+slider2 = tk.Scale(root, from_=0.01, to=5.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass2)
 slider2.place(x=320, y=84)
 
-slider_value2 = tk.Label(root, text="0.1 kg", font=("Comic Sans MS", 10))
+slider_value2 = tk.Label(root, text="0.01 kg", font=("Comic Sans MS", 10))
 slider_value2.place(x=430, y=81)
 
 label3 = tk.Label(root, text="Length of first rod:", font=("Comic Sans MS", 10))
 label3.place(x=100, y=112)
 
-slider3 = tk.Scale(root, from_=0.5, to=2.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_length1)
+slider3 = tk.Scale(root, from_=0.1, to=3.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_length1)
 slider3.place(x=320, y=115)
 
 slider_value3 = tk.Label(root, text="0.1 m", font=("Comic Sans MS", 10))
@@ -443,16 +444,16 @@ slider_value3.place(x=430, y=112)
 label4 = tk.Label(root, text="Mass of first rod:", font=("Comic Sans MS", 10))
 label4.place(x=100, y=143)
 
-slider4 = tk.Scale(root, from_=0.1, to=5.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass3)
+slider4 = tk.Scale(root, from_=0.01, to=2.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass3)
 slider4.place(x=320, y=146)
  
-slider_value4 = tk.Label(root, text="0.1 kg", font=("Comic Sans MS", 10))
+slider_value4 = tk.Label(root, text="0.01 kg", font=("Comic Sans MS", 10))
 slider_value4.place(x=430, y=143)
 
 label5 = tk.Label(root, text="Length of second rod:", font=("Comic Sans MS", 10))
 label5.place(x=100, y=174)
 
-slider5 = tk.Scale(root, from_=0.5, to=2.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_length2)
+slider5 = tk.Scale(root, from_=0.1, to=3.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_length2)
 slider5.place(x=320, y=177)
 
 slider_value5 = tk.Label(root, text="0.1 m", font=("Comic Sans MS", 10))
@@ -461,34 +462,34 @@ slider_value5.place(x=430, y=174)
 label6 = tk.Label(root, text="Mass of second rod:", font=("Comic Sans MS", 10))
 label6.place(x=100, y=205)
 
-slider6 = tk.Scale(root, from_=0.5, to=2.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass4)
+slider6 = tk.Scale(root, from_=0.01, to=2.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass4)
 slider6.place(x=320, y=208)
 
-slider_value6 = tk.Label(root, text="0.1 kg", font=("Comic Sans MS", 10))
+slider_value6 = tk.Label(root, text="0.01 kg", font=("Comic Sans MS", 10))
 slider_value6.place(x=430, y=205)
 
 label7 = tk.Label(root, text="Hinge friction on first rod:", font=("Comic Sans MS", 10))
 label7.place(x=100, y=236)
 
-slider7 = tk.Scale(root, from_=0.01, to=10.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_friction1)
+slider7 = tk.Scale(root, from_=0.001, to=1, resolution=0.001, orient="horizontal", width=10, length=90, showvalue=False, command=update_friction1)
 slider7.place(x=320, y=239)
 
-slider_value7 = tk.Label(root, text="0.01 N·m·s/rad", font=("Comic Sans MS", 10))
+slider_value7 = tk.Label(root, text="0.001 N·m·s/rad", font=("Comic Sans MS", 10))
 slider_value7.place(x=430, y=236)
 
 label8 = tk.Label(root, text="Hinge friction on second rod:", font=("Comic Sans MS", 10))
 label8.place(x=100, y=267)
 
-slider8 = tk.Scale(root, from_=0.01, to=10.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_friction2)
+slider8 = tk.Scale(root, from_=0.001, to=1, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_friction2)
 slider8.place(x=320, y=270)
 
-slider_value8 = tk.Label(root, text="0.01 N·m·s/rad", font=("Comic Sans MS", 10))
+slider_value8 = tk.Label(root, text="0.001 N·m·s/rad", font=("Comic Sans MS", 10))
 slider_value8.place(x=430, y=267)
 
 label9 = tk.Label(root, text="Drag coefficient (Air resistance):", font=("Comic Sans MS", 10))
 label9.place(x=100, y=298)
 
-slider9 = tk.Scale(root, from_=0, to=2, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_resistance)
+slider9 = tk.Scale(root, from_=0, to=1.5, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_resistance)
 slider9.place(x=320, y=301)
 
 slider_value9 = tk.Label(root, text="0 Cd", font=("Comic Sans MS", 10))
@@ -515,19 +516,19 @@ slider_value11.place(x=430, y=360)
 label12 = tk.Label(root, text="Angular velocity of rod 1", font=("Comic Sans MS", 10))
 label12.place(x=100, y=391)
 
-slider12 = tk.Scale(root, from_=0.1, to=5, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_velocity1)
+slider12 = tk.Scale(root, from_=0, to=10, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_velocity1)
 slider12.place(x=320, y=394)
 
-slider_value12 = tk.Label(root, text="0.1 rad/s", font=("Comic Sans MS", 10))
+slider_value12 = tk.Label(root, text="0 rad/s", font=("Comic Sans MS", 10))
 slider_value12.place(x=430, y=391)
 
 label13 = tk.Label(root, text="Angular velocity of rod 2", font=("Comic Sans MS", 10))
 label13.place(x=100, y=422)
 
-slider13 = tk.Scale(root, from_=0.1, to=5, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_velocity2)
+slider13 = tk.Scale(root, from_=0, to=10, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_velocity2)
 slider13.place(x=320, y=425)
 
-slider_value13 = tk.Label(root, text="0.1 rad/s", font=("Comic Sans MS", 10))
+slider_value13 = tk.Label(root, text="0 rad/s", font=("Comic Sans MS", 10))
 slider_value13.place(x=430, y=422)
 
 start_button = tk.Button(root, text="Start simulation", bg="green", fg="white", activebackground="darkgreen", activeforeground="white",

@@ -1,39 +1,54 @@
-# 🌀 Double Pendulum Simulator
+# 🌀 Double Pendulum Chaos Simulator
 
-This project simulates the motion of a **double pendulum**, incorporating **friction** and **air resistance** to model real-world dynamics. It’s a physics-based simulation designed to visualize chaotic motion and energy dissipation over time.
+![Double Pendulum Simulation](OIP.jpeg)
+
+A Python-based physics simulation of a chaotic double pendulum system with realistic damping effects. This interactive application visualizes complex motion patterns and energy dissipation in a classical mechanics system.
 
 ## ✨ Features
 
-- 📈 Realistic modeling of a double pendulum using differential equations
-- 💨 Includes **air resistance** and **pivot friction**
-- 🔬 Displays key physical parameters like energy, velocity, and angle
-- 🎮 Interactive controls to play, pause, reset, and tweak parameters
-- 📊 Optional graphing for kinetic, potential, and total energy over time
+- **Realistic Physics Engine**
+  - Lagrangian mechanics formulation
+  - Adjustable masses for bobs and rods
+  - Configurable rod lengths and pivot friction
+  - Quadratic air resistance modeling
 
-## 🚀 Demo
+- **Interactive Visualization**
+  - Real-time animation with velocity-colored traces
+  - Play/pause/reset controls
+  - Parameter sliders for experimentation
+  - Default presets for interesting behaviors
 
-> [Live Demo Link](#) *(optional if you’ve deployed it somewhere)*
+- **Advanced Analytics**
+  - Angular position/velocity time-series
+  - Mechanical energy tracking (KE + PE)
+  - Chaos analysis via perturbation studies
+  - Phase space visualization
 
-## 🧠 Concepts Used
+## 🧮 Physics Concepts
 
-- Newtonian Mechanics
-- Damped motion and drag forces
-- Numerical methods (e.g., Runge-Kutta for solving ODEs)
+- Double pendulum dynamics
 - Chaotic systems behavior
+- Energy dissipation mechanisms
+- Numerical solutions to coupled ODEs
+- Sensitivity to initial conditions
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript / React *(update based on your actual tech)*
-- **Visualization**: Canvas / D3.js / p5.js *(depending on what you’re using)*
-- **Math**: Custom physics engine for solving equations of motion
+- **Core**: Python 3.x
+- **Numerics**: NumPy, SciPy
+- **Symbolics**: SymPy
+- **Visualization**: Matplotlib
+- **GUI**: Tkinter
 
-## ⚙️ How to Run Locally
+## ⚙️ Installation & Usage
 
 ```bash
+# Clone repository
 git clone https://github.com/your-username/double-pendulum-simulator.git
 cd double-pendulum-simulator
-# If using vanilla JS
-open index.html
-# If using React or Vite
-npm install
-npm run dev
+
+# Install dependencies
+pip install numpy sympy scipy matplotlib
+
+# Run simulation
+python double_pendulum.py

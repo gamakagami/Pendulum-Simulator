@@ -84,20 +84,3 @@ double-pendulum-simulator/
 ├── requirements.txt      # Python dependencies
 └── README.md             # This document
 ```
-
-## License
-
-MIT License - Free for educational and research use
-
-## Contributors
-
-- Your Name
-- Collaborator Name
-
-**Pro Tip:** Try the "Recommended Configurations" button for pre-tuned chaotic motion examples!
-
-Just copy this into your README.md file and:
-1. Replace image reference if needed
-2. Update contributor info
-3. Add actual repo link if available
-4. Modify tech stack if you're using different libraries

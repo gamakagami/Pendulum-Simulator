@@ -505,6 +505,81 @@ def reset_settings():
     slider12.set(0)
     slider13.set(0)    
 
+def small_angle_case():
+    slider1.set(1.0)     # m1
+    slider2.set(1.0)     # m2
+    slider3.set(1.0)     # L1
+    slider5.set(1.0)     # L2
+    slider4.set(0.1)     # rod1 mass
+    slider6.set(0.1)     # rod2 mass
+    slider7.set(0.05)    # friction1
+    slider8.set(0.05)    # friction2
+    slider9.set(0.1)     # drag
+    slider10.set(0.05)   # θ1 small angle
+    slider11.set(0.05)   # θ2 small angle
+    slider12.set(0.0)    # ω1
+    slider13.set(0.0)    # ω2
+
+def high_friction_case():
+    slider1.set(1.0)
+    slider2.set(1.0)
+    slider3.set(1.0)
+    slider5.set(1.0)
+    slider4.set(0.1)
+    slider6.set(0.1)
+    slider7.set(1.0)   # high friction
+    slider8.set(1.0)   # high friction
+    slider9.set(0.5)
+    slider10.set(np.pi / 3)
+    slider11.set(np.pi / 4)
+    slider12.set(0.5)
+    slider13.set(-0.5)
+
+def zero_friction_case():
+    slider1.set(2.0)
+    slider2.set(1.0)
+    slider3.set(1.5)
+    slider5.set(1.0)
+    slider4.set(0.2)
+    slider6.set(0.2)
+    slider7.set(0.0)   # no hinge friction
+    slider8.set(0.0)
+    slider9.set(0.0)   # no air drag
+    slider10.set(np.pi / 2)
+    slider11.set(-np.pi / 1.8)
+    slider12.set(0.5)
+    slider13.set(-0.3)
+
+def heavy_first_mass_case():
+    slider1.set(5.0)    # very heavy m1
+    slider2.set(0.1)    # very light m2
+    slider3.set(1.0)
+    slider5.set(1.0)
+    slider4.set(0.3)
+    slider6.set(0.1)
+    slider7.set(0.05)
+    slider8.set(0.05)
+    slider9.set(0.1)
+    slider10.set(np.pi / 4)
+    slider11.set(np.pi / 6)
+    slider12.set(0.3)
+    slider13.set(0.3)
+
+def heavy_second_mass_case():
+    slider1.set(0.1)    # very light m1
+    slider2.set(5.0)    # very heavy m2
+    slider3.set(1.0)
+    slider5.set(1.0)
+    slider4.set(0.1)
+    slider6.set(0.3)
+    slider7.set(0.05)
+    slider8.set(0.05)
+    slider9.set(0.1)
+    slider10.set(np.pi / 4)
+    slider11.set(np.pi / 6)
+    slider12.set(0.3)
+    slider13.set(0.3)
+
 def stop_animation():
     ani.event_source.stop()
 
@@ -650,5 +725,11 @@ show_energy_button.place(x=400, y=513)
 
 show_chaos_button = tk.Button(root, text="Show Chaos Analysis", command=lambda: show_chaos_analysis())
 show_chaos_button.place(x=560, y=513)
+
+tk.Button(root, text="Small Angle Case", command=small_angle_case).place(x=100, y=553)
+tk.Button(root, text="High Friction Case", command=high_friction_case).place(x=250, y=553)
+tk.Button(root, text="Zero Friction Case", command=zero_friction_case).place(x=400, y=553)
+tk.Button(root, text="Heavy First Mass", command=heavy_first_mass_case).place(x=560, y=553)
+tk.Button(root, text="Heavy Second Mass", command=heavy_second_mass_case).place(x=720, y=553)
 
 root.mainloop()

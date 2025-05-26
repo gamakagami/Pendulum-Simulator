@@ -13,7 +13,7 @@ from PIL import Image, ImageTk
 
 # Main application window
 root = tk.Tk()
-root.title("Double Pendulum Simulation - Corrected")
+root.title("Double Pendulum Simulation")
 root.geometry("1920x1080")
 
 # Initialize the figure variable that will hold our animation
@@ -23,7 +23,7 @@ fig = None
 canvas1 = tk.Canvas(root, width=500, height=500, bg="black")
 canvas1.place(x=700, y=50)
 canvas1.create_text(250, 100, text="Double Pendulum", fill="white", font=("Comic Sans MS", 30))
-canvas1.create_text(250, 170, text="Simulation (Corrected)", fill="white", font=("Comic Sans MS", 25))
+canvas1.create_text(250, 170, text="Simulation", fill="white", font=("Comic Sans MS", 25))
 
 # Load and display welcome image
 try:
@@ -64,7 +64,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     x2 = L1*smp.sin(the1)+L2*smp.sin(the2)
     y2 = -L1*smp.cos(the1)-L2*smp.cos(the2)
 
-    # CORRECTED: Calculate kinetic energies including rod inertia from the start
+    # Calculate kinetic energies including rod inertia from the start
     # Point mass kinetic energies
     T1_point = smp.Rational(1,2) * m1 * (smp.diff(x1, t)**2 + smp.diff(y1, t)**2)
     T2_point = smp.Rational(1,2) * m2 * (smp.diff(x2, t)**2 + smp.diff(y2, t)**2)
@@ -102,7 +102,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     dthe2dt_f = smp.lambdify(the2_d, the2_d)
 
     """
-        Corrected system of differential equations for the double pendulum.
+        system of differential equations for the double pendulum.
         Rod inertia is now properly included in the Lagrangian derivation.
         
         Parameters:
@@ -122,7 +122,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     def dSdt(S, t, g, m1, m2, L1, L2, mr1, mr2, Cd, rho, bf1, bf2):
         the1, z1, the2, z2 = S
 
-        # Get angular accelerations from the corrected Lagrangian solution
+        # Get angular accelerations from the Lagrangian solution
         # (Rod inertia is now properly included in the coupling)
         dz1dt = dz1dt_f(t, g, m1, m2, L1, L2, mr1, mr2, the1, the2, z1, z2)
         dz2dt = dz2dt_f(t, g, m1, m2, L1, L2, mr1, mr2, the1, the2, z1, z2)
@@ -173,7 +173,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     bf2 = hinge_friction2 # Friction coefficient at pivot 2 (N·m·s/rad)
     initial_conditions = [theta_val1, ang_velocity1, theta_val2, ang_velocity2]  # [theta1, z1, theta2, z2]
 
-    # Solve the system of ODEs with the corrected parameters
+    # Solve the system of ODEs with the parameters
     print("Solving differential equations...")
     ans = odeint(dSdt, y0=initial_conditions, t=t,
                 args=(g, m1, m2, L1, L2, mr1, mr2, Cd, rho, bf1, bf2))
@@ -248,7 +248,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
                         fontsize=10, color='white')
 
     # Title with nice font
-    plt.title('Double Pendulum Simulation (Corrected)', color='white', fontsize=16, pad=20, 
+    plt.title('Double Pendulum Simulation', color='white', fontsize=16, pad=20, 
             fontweight='bold', fontfamily='serif')
 
     canvas = FigureCanvasTkAgg(fig, master=root)
@@ -306,7 +306,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
                                 interval=40, blit=True)
     ani.event_source.stop()
 
-    # --- Corrected Energy Tracking ---
+    # --- Energy Tracking ---
     # Extract solution arrays
     theta1 = ans[:, 0] # Angle of first pendulum
     omega1 = ans[:, 1] # Angular velocity of first pendulum
@@ -355,7 +355,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         ax1.plot(t, theta2, label=r'$\theta_2$', color='magenta')
         ax1.set_xlabel('Time (s)')
         ax1.set_ylabel('Angle (rad)')
-        ax1.set_title('Angular Position vs. Time (Corrected Model)')
+        ax1.set_title('Angular Position vs. Time')
         ax1.grid(True, linestyle='--', alpha=0.5)
         ax1.legend()
         
@@ -375,7 +375,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         ax2.plot(t, omega2, label=r'$\omega_2$', color='red')
         ax2.set_xlabel('Time (s)')
         ax2.set_ylabel('Angular Velocity (rad/s)')
-        ax2.set_title('Angular Velocity vs. Time (Corrected Model)')
+        ax2.set_title('Angular Velocity vs. Time')
         ax2.grid(True, linestyle='--', alpha=0.5)
         ax2.legend()
 
@@ -394,7 +394,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         ax3.plot(t, E_total)
         ax3.set_xlabel('Time (s)')
         ax3.set_ylabel('Mechanical Energy (J)')
-        ax3.set_title('Energy Dissipation Over Time (Corrected Model)')
+        ax3.set_title('Energy Dissipation Over Time')
         ax3.grid(True, linestyle='--', alpha=0.5)
 
         canvas_total_energy = FigureCanvasTkAgg(fig3, master=energy_loss_popup)
@@ -412,7 +412,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         ax4.plot(t, np.abs(ans[:, 2] - ans_perturbed[:, 2]), 'r')
         ax4.set_xlabel('Time (s)')
         ax4.set_ylabel('|Δθ₂| (rad)')
-        ax4.set_title('Chaos: Angle Divergence from Δθ₂(0) = 0.001 rad (Corrected)')
+        ax4.set_title('Chaos: Angle Divergence from Δθ₂(0) = 0.001 rad')
         ax4.grid(True, linestyle='--', alpha=0.5)
 
         canvas_chaos_analysis = FigureCanvasTkAgg(fig4, master=chaos_analysis_popup)

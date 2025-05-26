@@ -13,7 +13,7 @@ from PIL import Image, ImageTk
 
 # Main application window
 root = tk.Tk()
-root.title("Double Pendulum Simulation")
+root.title("Double Pendulum Simulation - Corrected")
 root.geometry("1920x1080")
 
 # Initialize the figure variable that will hold our animation
@@ -23,7 +23,7 @@ fig = None
 canvas1 = tk.Canvas(root, width=500, height=500, bg="black")
 canvas1.place(x=700, y=50)
 canvas1.create_text(250, 100, text="Double Pendulum", fill="white", font=("Comic Sans MS", 30))
-canvas1.create_text(250, 170, text="Simulation", fill="white", font=("Comic Sans MS", 30))
+canvas1.create_text(250, 170, text="Simulation (Corrected)", fill="white", font=("Comic Sans MS", 25))
 
 # Load and display welcome image
 try:
@@ -38,27 +38,14 @@ except FileNotFoundError:
 if fig:
     canvas1.destroy()
 
-"""
-    Main function to set up and run the double pendulum simulation
-    
-    Parameters:
-    - m1_val, m2_val: Masses of the first and second point masses (kg)
-    - L1_val, L2_val: Lengths of the first and second rods (m)
-    - drag_coeff: Air resistance coefficient
-    - mass_rod1, mass_rod2: Masses of the rods (kg)
-    - hinge_friction1, hinge_friction2: Friction coefficients at the hinges (N·m·s/rad)
-    - theta_val1, theta_val2: Initial angles of the rods (rad)
-    - ang_velocity1, ang_velocity2: Initial angular velocities (rad/s)
-    - root: Tkinter root window
-"""
 def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge_friction1, hinge_friction2, theta_val1, ang_velocity1, theta_val2, ang_velocity2, root):
     global ani
 
-
     # Define symbolic variables for deriving equations of motion
     t, g = smp.symbols('t g')  # time and gravitational acceleration
-    m1, m2 = smp.symbols('m1 m2')  # masses
+    m1, m2 = smp.symbols('m1 m2')  # point masses
     L1, L2 = smp.symbols('L1, L2')  # rod lengths
+    mr1, mr2 = smp.symbols('mr1 mr2')  # rod masses
 
     # Define the angle functions of time
     the1, the2 = smp.symbols(r'\theta_1, \theta_2', cls=smp.Function)
@@ -71,17 +58,25 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     the1_dd = smp.diff(the1_d, t) # Second derivative: angular acceleration of rod 1
     the2_dd = smp.diff(the2_d, t) # Second derivative: angular acceleration of rod 2
 
-    # Calculate positions of the masses
-    # For the first mass (x1, y1) and second mass (x2, y2)
+    # Calculate positions of the point masses
     x1 = L1*smp.sin(the1)
     y1 = -L1*smp.cos(the1)
     x2 = L1*smp.sin(the1)+L2*smp.sin(the2)
     y2 = -L1*smp.cos(the1)-L2*smp.cos(the2)
 
-    # Calculate kinetic energies for each mass
-    T1 = 1/2 * m1 * (smp.diff(x1, t)**2 + smp.diff(y1, t)**2)
-    T2 = 1/2 * m2 * (smp.diff(x2, t)**2 + smp.diff(y2, t)**2)
-    T = T1+T2 # Total kinetic energy
+    # CORRECTED: Calculate kinetic energies including rod inertia from the start
+    # Point mass kinetic energies
+    T1_point = smp.Rational(1,2) * m1 * (smp.diff(x1, t)**2 + smp.diff(y1, t)**2)
+    T2_point = smp.Rational(1,2) * m2 * (smp.diff(x2, t)**2 + smp.diff(y2, t)**2)
+    
+    # Rod rotational kinetic energies (moment of inertia for rod about end: I = mL²/3)
+    I1 = mr1 * L1**2 / 3  # Moment of inertia of first rod
+    I2 = mr2 * L2**2 / 3  # Moment of inertia of second rod
+    T1_rod = smp.Rational(1,2) * I1 * the1_d**2
+    T2_rod = smp.Rational(1,2) * I2 * the2_d**2
+    
+    # Total kinetic energy (properly coupled from the beginning)
+    T = T1_point + T2_point + T1_rod + T2_rod
 
     # Calculate potential energies for each mass (relative to y=0)
     V1 = m1*g*y1
@@ -89,7 +84,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     V = V1 + V2 # Total potential energy
 
     # Lagrangian = T - V (Kinetic - Potential Energy)
-    L = T-V
+    L = T - V
 
     # Euler-Lagrange equations for each angle
     # d/dt(∂L/∂θ̇) - ∂L/∂θ = 0
@@ -97,16 +92,18 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     LE2 = smp.diff(L, the2) - smp.diff(smp.diff(L, the2_d), t).simplify()
 
     # Solve the Euler-Lagrange equations for the angular accelerations
+    print("Solving Lagrangian equations... (this may take a moment)")
     sols = smp.solve([LE1, LE2], (the1_dd, the2_dd), simplify=False, rational=False)
 
     # Convert symbolic solutions to numerical functions
-    dz1dt_f = smp.lambdify((t,g,m1,m2,L1,L2,the1,the2,the1_d,the2_d), sols[the1_dd])
-    dz2dt_f = smp.lambdify((t,g,m1,m2,L1,L2,the1,the2,the1_d,the2_d), sols[the2_dd])
+    dz1dt_f = smp.lambdify((t,g,m1,m2,L1,L2,mr1,mr2,the1,the2,the1_d,the2_d), sols[the1_dd])
+    dz2dt_f = smp.lambdify((t,g,m1,m2,L1,L2,mr1,mr2,the1,the2,the1_d,the2_d), sols[the2_dd])
     dthe1dt_f = smp.lambdify(the1_d, the1_d)
     dthe2dt_f = smp.lambdify(the2_d, the2_d)
 
     """
-        System of differential equations for the double pendulum with friction and drag.
+        Corrected system of differential equations for the double pendulum.
+        Rod inertia is now properly included in the Lagrangian derivation.
         
         Parameters:
         - S: State vector [theta1, omega1, theta2, omega2]
@@ -114,22 +111,26 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         - g: Gravity
         - m1, m2: Point masses
         - L1, L2: Rod lengths
+        - mr1, mr2: Rod masses
         - Cd: Drag coefficient
         - rho: Air density
-        - mr1, mr2: Rod masses
         - bf1, bf2: Hinge friction coefficients
         
         Returns: 
         - Derivatives of the state vector
     """
-    def dSdt(S, t, g, m1, m2, L1, L2, Cd, rho, mr1, mr2, bf1, bf2):
+    def dSdt(S, t, g, m1, m2, L1, L2, mr1, mr2, Cd, rho, bf1, bf2):
         the1, z1, the2, z2 = S
 
-        # Calculate moment of inertia for rods (pivoted at end: I = m_r * L^2 / 3)
-        I1 = mr1 * L1**2 / 3
-        I2 = mr2 * L2**2 / 3
+        # Get angular accelerations from the corrected Lagrangian solution
+        # (Rod inertia is now properly included in the coupling)
+        dz1dt = dz1dt_f(t, g, m1, m2, L1, L2, mr1, mr2, the1, the2, z1, z2)
+        dz2dt = dz2dt_f(t, g, m1, m2, L1, L2, mr1, mr2, the1, the2, z1, z2)
 
-        # Cross-sectional areas for drag calculation (approximation)
+        # Add dissipative forces (drag and friction)
+        # These are still added as corrections since they're non-conservative
+        
+        # Cross-sectional areas for drag calculation
         A1 = 0.01
         A2 = 0.01
 
@@ -141,13 +142,13 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         fric1 = -bf1 * z1
         fric2 = -bf2 * z2
 
-        # Get angular accelerations from the Lagrangian solution
-        dz1dt = dz1dt_f(t, g, m1, m2, L1, L2, the1, the2, z1, z2)
-        dz2dt = dz2dt_f(t, g, m1, m2, L1, L2, the1, the2, z1, z2)
+        # Effective moments of inertia (including both point mass and rod contributions)
+        I_eff1 = m1 * L1**2 + mr1 * L1**2 / 3
+        I_eff2 = m2 * L2**2 + mr2 * L2**2 / 3
 
-        # Add corrections for drag and friction
-        dz1dt += (drag1 + fric1) / (m1 * L1**2 + I1)
-        dz2dt += (drag2 + fric2) / (m2 * L2**2 + I2)
+        # Add dissipative corrections to the accelerations
+        dz1dt += (drag1 + fric1) / I_eff1
+        dz2dt += (drag2 + fric2) / I_eff2
 
         # Return derivatives [dθ₁/dt, dω₁/dt, dθ₂/dt, dω₂/dt]
         return [
@@ -164,29 +165,29 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     m2 = m2_val # Mass of second pendulum (kg)
     L1 = L1_val # Length of first rod (m)
     L2 = L2_val  # Length of second rod (m)
-    Cd = drag_coeff  # drag coefficient (approx. for a sphere)
-    rho = 1.225  # air density (kg/m^3)
     mr1 = mass_rod1  # Mass of first rod (kg)
     mr2 = mass_rod2 # Mass of second rod (kg)
+    Cd = drag_coeff  # drag coefficient (approx. for a sphere)
+    rho = 1.225  # air density (kg/m^3)
     bf1 = hinge_friction1 # Friction coefficient at pivot 1 (N·m·s/rad)
     bf2 = hinge_friction2 # Friction coefficient at pivot 2 (N·m·s/rad)
     initial_conditions = [theta_val1, ang_velocity1, theta_val2, ang_velocity2]  # [theta1, z1, theta2, z2]
 
-    # Solve the system of ODEs with the given parameters
+    # Solve the system of ODEs with the corrected parameters
+    print("Solving differential equations...")
     ans = odeint(dSdt, y0=initial_conditions, t=t,
-                args=(g, m1, m2, L1, L2, Cd, rho, mr1, mr2, bf1, bf2))
+                args=(g, m1, m2, L1, L2, mr1, mr2, Cd, rho, bf1, bf2))
 
     # Create a slightly perturbed initial condition for chaos analysis
-    # Adding 0.001 rad to the initial angle of the second pendulum
     ic_perturbed = [initial_conditions[0], initial_conditions[1], initial_conditions[2] + 0.001, initial_conditions[3]]
-    ans_perturbed = odeint(dSdt, y0=ic_perturbed, t=t, args=(g, m1_val, m2_val, L1_val, L2_val, Cd, rho, mass_rod1, mass_rod2, hinge_friction1, hinge_friction2))
+    ans_perturbed = odeint(dSdt, y0=ic_perturbed, t=t, 
+                          args=(g, m1, m2, L1, L2, mr1, mr2, Cd, rho, bf1, bf2))
 
     # Extract angles from solution
     the1_arr, the2_arr = ans.T[0], ans.T[2]
 
     # Function to calculate positions from angles
     def get_x1y1x2y2(t, the1, the2, L1, L2):
-        # Calculate positions of both masses based on angles and rod lengths
         return (L1*np.sin(the1), # x1: x-position of first mass
                 -L1*np.cos(the1), # y1: y-position of first mass
                 L1*np.sin(the1) + L2*np.sin(the2), # x2: x-position of second mass
@@ -205,7 +206,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
 
     global fig
 
-    # Create a beautiful animation with improved aesthetics
+    # Create animation with improved aesthetics
     fig, ax = plt.subplots(figsize=(5, 5), facecolor='#0E1117')
     ax.set_facecolor('#0E1117')  # Dark blue-black background
     ax.grid(color='#2A3459', linestyle='-', linewidth=0.3, alpha=0.7)  # Subtle grid
@@ -247,17 +248,15 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
                         fontsize=10, color='white')
 
     # Title with nice font
-    plt.title('Double Pendulum Simulation', color='white', fontsize=16, pad=20, 
+    plt.title('Double Pendulum Simulation (Corrected)', color='white', fontsize=16, pad=20, 
             fontweight='bold', fontfamily='serif')
 
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.draw()
     canvas.get_tk_widget().place(x=700, y=50)
 
-
     # Animation function
     def animate(i):
-
         # Update pendulum position
         line.set_data([0, x1[i], x2[i]], [0, y1[i], y2[i]])
         mass1.set_data([x1[i]], [y1[i]])
@@ -276,7 +275,6 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         
         # Update trace color based on velocity
         if i > 0:
-
             # Create segments for colored line collection
             points = np.array([trace_x, trace_y]).T.reshape(-1, 1, 2)
             segments = np.concatenate([points[:-1], points[1:]], axis=1)
@@ -303,11 +301,12 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         return line, mass1, mass2, trace, time_text
 
     # Create the animation
+    print("Creating animation...")
     ani = animation.FuncAnimation(fig, animate, frames=len(t), 
                                 interval=40, blit=True)
     ani.event_source.stop()
 
-    # --- Energy Tracking ---
+    # --- Corrected Energy Tracking ---
     # Extract solution arrays
     theta1 = ans[:, 0] # Angle of first pendulum
     omega1 = ans[:, 1] # Angular velocity of first pendulum
@@ -330,9 +329,9 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     KE1 = 0.5 * m1 * (vx1**2 + vy1**2)
     KE2 = 0.5 * m2 * (vx2**2 + vy2**2)
 
-    # Rotational KE of rods
-    I1 = mr1 * L1**2 / 3 # Moment of inertia of first rod (rod pivoted at end)
-    I2 = mr2 * L2**2 / 3 # Moment of inertia of second rod (rod pivoted at end)
+    # Rotational KE of rods (properly calculated)
+    I1 = mr1 * L1**2 / 3 # Moment of inertia of first rod
+    I2 = mr2 * L2**2 / 3 # Moment of inertia of second rod
     RE1 = 0.5 * I1 * omega1**2 # Rotational energy of first rod
     RE2 = 0.5 * I2 * omega2**2 # Rotational energy of second rod
 
@@ -346,7 +345,6 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
     # --- Functions for additional analysis graphs ---
     global show_angular_positions
 
-    # Display a graph of angular positions over time
     def show_angular_positions():
         angular_position_popup = tk.Toplevel()
         angular_position_popup.geometry(("700x500"))
@@ -355,8 +353,9 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         fig1, ax1 = plt.subplots()
         ax1.plot(t, theta1, label=r'$\theta_1$', color='cyan')
         ax1.plot(t, theta2, label=r'$\theta_2$', color='magenta')
+        ax1.set_xlabel('Time (s)')
         ax1.set_ylabel('Angle (rad)')
-        ax1.set_title('Angular Position vs. Time')
+        ax1.set_title('Angular Position vs. Time (Corrected Model)')
         ax1.grid(True, linestyle='--', alpha=0.5)
         ax1.legend()
         
@@ -366,7 +365,6 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
 
     global show_angular_velocities
 
-    # Display a graph of angular velocities over time
     def show_angular_velocities():
         angular_velocity_popup = tk.Toplevel()
         angular_velocity_popup.geometry(("700x500"))
@@ -377,7 +375,7 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
         ax2.plot(t, omega2, label=r'$\omega_2$', color='red')
         ax2.set_xlabel('Time (s)')
         ax2.set_ylabel('Angular Velocity (rad/s)')
-        ax2.set_title('Angular Velocity vs. Time')
+        ax2.set_title('Angular Velocity vs. Time (Corrected Model)')
         ax2.grid(True, linestyle='--', alpha=0.5)
         ax2.legend()
 
@@ -387,17 +385,17 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
 
     global show_mechanical_energy
 
-    # Display a graph of mechanical energy over time
     def show_mechanical_energy():
         energy_loss_popup = tk.Toplevel()
         energy_loss_popup.geometry(("700x500"))
-        energy_loss_popup.title("Mechanical energy Graph")
+        energy_loss_popup.title("Mechanical Energy Graph")
 
         fig3, ax3 = plt.subplots()
         ax3.plot(t, E_total)
         ax3.set_xlabel('Time (s)')
         ax3.set_ylabel('Mechanical Energy (J)')
-        ax3.set_title('Energy Dissipation Over Time')
+        ax3.set_title('Energy Dissipation Over Time (Corrected Model)')
+        ax3.grid(True, linestyle='--', alpha=0.5)
 
         canvas_total_energy = FigureCanvasTkAgg(fig3, master=energy_loss_popup)
         canvas_total_energy.draw()
@@ -405,23 +403,21 @@ def main(m1_val, m2_val, L1_val, L2_val, drag_coeff, mass_rod1, mass_rod2, hinge
 
     global show_chaos_analysis
 
-    # Display a graph showing chaos (sensitivity to initial conditions)
     def show_chaos_analysis():
         chaos_analysis_popup = tk.Toplevel()
         chaos_analysis_popup.geometry(("700x500"))
-        chaos_analysis_popup.title("Chaos analysis Graph")
+        chaos_analysis_popup.title("Chaos Analysis Graph")
 
         fig4, ax4 = plt.subplots()
         ax4.plot(t, np.abs(ans[:, 2] - ans_perturbed[:, 2]), 'r')
         ax4.set_xlabel('Time (s)')
         ax4.set_ylabel('|Δθ₂| (rad)')
-        ax4.set_title('Chaos: Angle Divergence from Δθ₂(0) = 0.001 rad')
+        ax4.set_title('Chaos: Angle Divergence from Δθ₂(0) = 0.001 rad (Corrected)')
+        ax4.grid(True, linestyle='--', alpha=0.5)
 
         canvas_chaos_analysis = FigureCanvasTkAgg(fig4, master=chaos_analysis_popup)
         canvas_chaos_analysis.draw()
         canvas_chaos_analysis.get_tk_widget().place(x=0, y=0)
-
-# --- GUI Callback functions ---
 
 def update_mass1(value):
     slider_value1.config(text=f"{value} kg")
@@ -463,32 +459,19 @@ def update_velocity2(value):
     slider_value13.config(text=f"{value} rad/s")
 
 def set_default_settings():
-    # Masses (kg) 
-    slider1.set(2.0)  # First bob 
-    slider2.set(1.0)  # Second bob
-    
-    # Lengths (m)
-    slider3.set(1.5)  # First rod
-    slider5.set(1.0)  # Second rod
-    
-    # Rod masses (kg)
-    slider4.set(0.3)  # First rod
-    slider6.set(0.2)  # Second rod
-    
-    # Friction (N·m·s/rad)
-    slider7.set(0.1)  # Moderate friction at top hinge
-    slider8.set(0.08)  # Slightly less at bottom hinge
-    
-    # Air resistance
-    slider9.set(0.5)  # Significant drag coefficient
-    
-    # Initial angles (rad)
-    slider10.set(np.pi/2)  # First pendulum starts horizontal (90°)
-    slider11.set(-np.pi/1.8)  # Second pendulum at -100° (creates tension)
-    
-    # Initial angular velocities (rad/s
-    slider12.set(0.5)  # Small clockwise push to first pendulum
-    slider13.set(-0.3)  # Small counter-clockwise push to second pendulum
+    slider1.set(1.0)
+    slider2.set(1.0)
+    slider3.set(1.0)
+    slider4.set(0.1)
+    slider5.set(1.0)
+    slider6.set(0.1)
+    slider7.set(0.05)
+    slider8.set(0.05)
+    slider9.set(0.1)
+    slider10.set(np.pi/4)
+    slider11.set(-np.pi/4)
+    slider12.set(0.0)
+    slider13.set(0.0)
 
 def reset_settings():
     slider1.set(0)
@@ -504,81 +487,6 @@ def reset_settings():
     slider11.set(0)
     slider12.set(0)
     slider13.set(0)    
-
-def small_angle_case():
-    slider1.set(1.0)     # m1
-    slider2.set(1.0)     # m2
-    slider3.set(1.0)     # L1
-    slider5.set(1.0)     # L2
-    slider4.set(0.1)     # rod1 mass
-    slider6.set(0.1)     # rod2 mass
-    slider7.set(0.05)    # friction1
-    slider8.set(0.05)    # friction2
-    slider9.set(0.1)     # drag
-    slider10.set(0.05)   # θ1 small angle
-    slider11.set(0.05)   # θ2 small angle
-    slider12.set(0.0)    # ω1
-    slider13.set(0.0)    # ω2
-
-def high_friction_case():
-    slider1.set(1.0)
-    slider2.set(1.0)
-    slider3.set(1.0)
-    slider5.set(1.0)
-    slider4.set(0.1)
-    slider6.set(0.1)
-    slider7.set(1.0)   # high friction
-    slider8.set(1.0)   # high friction
-    slider9.set(0.5)
-    slider10.set(np.pi / 3)
-    slider11.set(np.pi / 4)
-    slider12.set(0.5)
-    slider13.set(-0.5)
-
-def zero_friction_case():
-    slider1.set(2.0)
-    slider2.set(1.0)
-    slider3.set(1.5)
-    slider5.set(1.0)
-    slider4.set(0.2)
-    slider6.set(0.2)
-    slider7.set(0.0)   # no hinge friction
-    slider8.set(0.0)
-    slider9.set(0.0)   # no air drag
-    slider10.set(np.pi / 2)
-    slider11.set(-np.pi / 1.8)
-    slider12.set(0.5)
-    slider13.set(-0.3)
-
-def heavy_first_mass_case():
-    slider1.set(5.0)    # very heavy m1
-    slider2.set(0.1)    # very light m2
-    slider3.set(1.0)
-    slider5.set(1.0)
-    slider4.set(0.3)
-    slider6.set(0.1)
-    slider7.set(0.05)
-    slider8.set(0.05)
-    slider9.set(0.1)
-    slider10.set(np.pi / 4)
-    slider11.set(np.pi / 6)
-    slider12.set(0.3)
-    slider13.set(0.3)
-
-def heavy_second_mass_case():
-    slider1.set(0.1)    # very light m1
-    slider2.set(5.0)    # very heavy m2
-    slider3.set(1.0)
-    slider5.set(1.0)
-    slider4.set(0.1)
-    slider6.set(0.3)
-    slider7.set(0.05)
-    slider8.set(0.05)
-    slider9.set(0.1)
-    slider10.set(np.pi / 4)
-    slider11.set(np.pi / 6)
-    slider12.set(0.3)
-    slider13.set(0.3)
 
 def stop_animation():
     ani.event_source.stop()
@@ -725,11 +633,5 @@ show_energy_button.place(x=400, y=513)
 
 show_chaos_button = tk.Button(root, text="Show Chaos Analysis", command=lambda: show_chaos_analysis())
 show_chaos_button.place(x=560, y=513)
-
-tk.Button(root, text="Small Angle Case", command=small_angle_case).place(x=100, y=553)
-tk.Button(root, text="High Friction Case", command=high_friction_case).place(x=250, y=553)
-tk.Button(root, text="Zero Friction Case", command=zero_friction_case).place(x=400, y=553)
-tk.Button(root, text="Heavy First Mass", command=heavy_first_mass_case).place(x=560, y=553)
-tk.Button(root, text="Heavy Second Mass", command=heavy_second_mass_case).place(x=720, y=553)
 
 root.mainloop()

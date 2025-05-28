@@ -24,7 +24,7 @@ canvas_widget = None
 
 # Create a welcome canvas with title
 canvas1 = tk.Canvas(root, width=500, height=500, bg="black")
-canvas1.place(x=700, y=50)
+canvas1.place(x=750, y=50)
 canvas1.create_text(250, 100, text="Double Pendulum", fill="white", font=("Arial", 30))
 canvas1.create_text(250, 170, text="Simulation", fill="white", font=("Arial", 25))
 
@@ -528,137 +528,137 @@ def open_boundary_case_menu():
 # Create sliders and labels
 
 head = tk.Label(root, text="Computational Physics Final Project", font=("Arial", 16))
-head.place(x=100, y=25)
+head.place(x=20, y=25)
 
 label1 = tk.Label(root, text="Mass of first pendulum:", font=("Arial", 10))
-label1.place(x=100, y=80)
+label1.place(x=20, y=80)
 
-slider1 = tk.Scale(root, from_=0.01, to=5.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass1)
-slider1.place(x=360, y=83)
+slider1 = tk.Scale(root, from_=0.01, to=5.0, resolution=0.01, orient="horizontal", width=10, length=300, showvalue=False, command=update_mass1)
+slider1.place(x=280, y=83)
 slider1.set(1.0)
 
 slider_value1 = tk.Label(root, text="1.00 kg", font=("Arial", 10))
-slider_value1.place(x=470, y=80)
+slider_value1.place(x=600, y=80)
 
 label2 = tk.Label(root, text="Mass of second pendulum:", font=("Arial", 10))
-label2.place(x=100, y=111)
+label2.place(x=20, y=111)
 
-slider2 = tk.Scale(root, from_=0.01, to=5.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass2)
-slider2.place(x=360, y=114)
+slider2 = tk.Scale(root, from_=0.01, to=5.0, resolution=0.01, orient="horizontal", width=10, length=300, showvalue=False, command=update_mass2)
+slider2.place(x=280, y=114)
 slider2.set(1.0)
 
 slider_value2 = tk.Label(root, text="1.00 kg", font=("Arial", 10))
-slider_value2.place(x=470, y=111)
+slider_value2.place(x=600, y=111)
 
 label3 = tk.Label(root, text="Length of first rod:", font=("Arial", 10))
-label3.place(x=100, y=142)
+label3.place(x=20, y=142)
 
-slider3 = tk.Scale(root, from_=0.1, to=2.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_length1)
-slider3.place(x=360, y=145)
+slider3 = tk.Scale(root, from_=0.1, to=2.0, resolution=0.1, orient="horizontal", width=10, length=300, showvalue=False, command=update_length1)
+slider3.place(x=280, y=145)
 slider3.set(1.0)
 
 slider_value3 = tk.Label(root, text="1.0 m", font=("Arial", 10))
-slider_value3.place(x=470, y=142)
+slider_value3.place(x=600, y=142)
 
 label4 = tk.Label(root, text="Mass of first rod:", font=("Arial", 10))
-label4.place(x=100, y=173)
+label4.place(x=20, y=173)
 
-slider4 = tk.Scale(root, from_=0.01, to=2.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass3)
-slider4.place(x=360, y=176)
+slider4 = tk.Scale(root, from_=0.01, to=2.0, resolution=0.01, orient="horizontal", width=10, length=300, showvalue=False, command=update_mass3)
+slider4.place(x=280, y=176)
 slider4.set(0.1)
- 
+
 slider_value4 = tk.Label(root, text="0.10 kg", font=("Arial", 10))
-slider_value4.place(x=470, y=173)
+slider_value4.place(x=600, y=173)
 
 label5 = tk.Label(root, text="Length of second rod:", font=("Arial", 10))
-label5.place(x=100, y=204)
+label5.place(x=20, y=204)
 
-slider5 = tk.Scale(root, from_=0.1, to=2.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_length2)
-slider5.place(x=360, y=207)
+slider5 = tk.Scale(root, from_=0.1, to=2.0, resolution=0.1, orient="horizontal", width=10, length=300, showvalue=False, command=update_length2)
+slider5.place(x=280, y=207)
 slider5.set(1.0)
 
 slider_value5 = tk.Label(root, text="1.0 m", font=("Arial", 10))
-slider_value5.place(x=470, y=204)
+slider_value5.place(x=600, y=204)
 
 label6 = tk.Label(root, text="Mass of second rod:", font=("Arial", 10))
-label6.place(x=100, y=235)
+label6.place(x=20, y=235)
 
-slider6 = tk.Scale(root, from_=0.01, to=2.0, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_mass4)
-slider6.place(x=360, y=238)
+slider6 = tk.Scale(root, from_=0.01, to=2.0, resolution=0.01, orient="horizontal", width=10, length=300, showvalue=False, command=update_mass4)
+slider6.place(x=280, y=238)
 slider6.set(0.1)
 
 slider_value6 = tk.Label(root, text="0.10 kg", font=("Arial", 10))
-slider_value6.place(x=470, y=235)
+slider_value6.place(x=600, y=235)
 
 label7 = tk.Label(root, text="Hinge friction on first rod:", font=("Arial", 10))
-label7.place(x=100, y=266)
+label7.place(x=20, y=266)
 
-slider7 = tk.Scale(root, from_=0.001, to=1.0, resolution=0.001, orient="horizontal", width=10, length=90, showvalue=False, command=update_friction1)
-slider7.place(x=360, y=269)
+slider7 = tk.Scale(root, from_=0.001, to=1.0, resolution=0.001, orient="horizontal", width=10, length=300, showvalue=False, command=update_friction1)
+slider7.place(x=280, y=269)
 slider7.set(0.05)
 
 slider_value7 = tk.Label(root, text="0.050 N·m·s/rad", font=("Arial", 10))
-slider_value7.place(x=470, y=266)
+slider_value7.place(x=600, y=266)
 
 label8 = tk.Label(root, text="Hinge friction on second rod:", font=("Arial", 10))
-label8.place(x=100, y=297)
+label8.place(x=20, y=297)
 
-slider8 = tk.Scale(root, from_=0.001, to=1.0, resolution=0.001, orient="horizontal", width=10, length=90, showvalue=False, command=update_friction2)
-slider8.place(x=360, y=300)
+slider8 = tk.Scale(root, from_=0.001, to=1.0, resolution=0.001, orient="horizontal", width=10, length=300, showvalue=False, command=update_friction2)
+slider8.place(x=280, y=300)
 slider8.set(0.05)
 
 slider_value8 = tk.Label(root, text="0.050 N·m·s/rad", font=("Arial", 10))
-slider_value8.place(x=470, y=297)
+slider_value8.place(x=600, y=297)
 
 label9 = tk.Label(root, text="Air resistance coefficient:", font=("Arial", 10))
-label9.place(x=100, y=328)
+label9.place(x=20, y=328)
 
-slider9 = tk.Scale(root, from_=0.0, to=1.5, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_resistance)
-slider9.place(x=360, y=331)
+slider9 = tk.Scale(root, from_=0.0, to=1.5, resolution=0.1, orient="horizontal", width=10, length=300, showvalue=False, command=update_resistance)
+slider9.place(x=280, y=331)
 slider9.set(0.1)
 
 slider_value9 = tk.Label(root, text="0.1 Cd", font=("Arial", 10))
-slider_value9.place(x=470, y=328)
+slider_value9.place(x=600, y=328)
 
 label10 = tk.Label(root, text="Initial angle of first pendulum:", font=("Arial", 10))
-label10.place(x=100, y=359)
+label10.place(x=20, y=359)
 
-slider10 = tk.Scale(root, from_=-np.pi, to=np.pi, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_angle1)
-slider10.place(x=360, y=362)
+slider10 = tk.Scale(root, from_=-np.pi, to=np.pi, resolution=0.01, orient="horizontal", width=10, length=300, showvalue=False, command=update_angle1)
+slider10.place(x=280, y=362)
 slider10.set(np.pi/4)
 
 slider_value10 = tk.Label(root, text="0.79 rad", font=("Arial", 10))
-slider_value10.place(x=470, y=359)
+slider_value10.place(x=600, y=359)
 
 label11 = tk.Label(root, text="Initial angle of second pendulum:", font=("Arial", 10))
-label11.place(x=100, y=390)
+label11.place(x=20, y=390)
 
-slider11 = tk.Scale(root, from_=-np.pi, to=np.pi, resolution=0.01, orient="horizontal", width=10, length=90, showvalue=False, command=update_angle2)
-slider11.place(x=360, y=393)
+slider11 = tk.Scale(root, from_=-np.pi, to=np.pi, resolution=0.01, orient="horizontal", width=10, length=300, showvalue=False, command=update_angle2)
+slider11.place(x=280, y=393)
 slider11.set(-np.pi/4)
 
 slider_value11 = tk.Label(root, text="-0.79 rad", font=("Arial", 10))
-slider_value11.place(x=470, y=390)
+slider_value11.place(x=600, y=390)
 
 label12 = tk.Label(root, text="Initial angular velocity of first pendulum:", font=("Arial", 10))
-label12.place(x=100, y=421)
+label12.place(x=20, y=421)
 
-slider12 = tk.Scale(root, from_=-10.0, to=10.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_velocity1)
-slider12.place(x=360, y=424)
+slider12 = tk.Scale(root, from_=-10.0, to=10.0, resolution=0.1, orient="horizontal", width=10, length=300, showvalue=False, command=update_velocity1)
+slider12.place(x=280, y=424)
 slider12.set(0.0)
 
 slider_value12 = tk.Label(root, text="0.0 rad/s", font=("Arial", 10))
-slider_value12.place(x=470, y=421)
+slider_value12.place(x=600, y=421)
 
 label13 = tk.Label(root, text="Initial angular velocity of second pendulum:", font=("Arial", 10))
-label13.place(x=100, y=452)
+label13.place(x=20, y=452)
 
-slider13 = tk.Scale(root, from_=-10.0, to=10.0, resolution=0.1, orient="horizontal", width=10, length=90, showvalue=False, command=update_velocity2)
-slider13.place(x=360, y=455)
+slider13 = tk.Scale(root, from_=-10.0, to=10.0, resolution=0.1, orient="horizontal", width=10, length=300, showvalue=False, command=update_velocity2)
+slider13.place(x=280, y=455)
 slider13.set(0.0)
 
 slider_value13 = tk.Label(root, text="0.0 rad/s", font=("Arial", 10))
-slider_value13.place(x=470, y=452)
+slider_value13.place(x=600, y=452)
 
 # Create buttons
 start_button = tk.Button(root, text="Start Simulation", background="green", foreground="white", activebackground="green", activeforeground="white", command=lambda: main(
@@ -666,21 +666,21 @@ start_button = tk.Button(root, text="Start Simulation", background="green", fore
     slider9.get(), slider4.get(), slider6.get(), slider7.get(),
     slider8.get(), slider10.get(), slider12.get(), slider11.get(),
     slider13.get(), root), width=15, height=1)
-start_button.place(x=100, y=510)
+start_button.place(x=20, y=510)
 
 stop_button = tk.Button(root, text="Stop Animation", background="darkred", foreground="white", activebackground="darkred", activeforeground="white", command=stop_animation, width=15, height=1)
-stop_button.place(x=240, y=510)
+stop_button.place(x=160, y=510)
 
 default_button = tk.Button(root, text="Default Settings", background="grey", foreground="white", activebackground="grey", activeforeground="white", command=set_default_settings, width=15, height=1)
-default_button.place(x=100, y=580)
+default_button.place(x=20, y=580)
 
 reset_button = tk.Button(root, text="Reset Settings", command=reset_settings, background="orange", foreground="black", activebackground="orange", activeforeground="black", width=15, height=1)
-reset_button.place(x=100, y=545)
+reset_button.place(x=20, y=545)
 
 boundary_button = tk.Button(root, text="Boundary Cases", background="grey", foreground="white", activebackground="grey", activeforeground="white", command=open_boundary_case_menu, width=15, height=1)
-boundary_button.place(x=240, y=545)
+boundary_button.place(x=160, y=545)
 
-# Analysis buttons
+# Analysis buttons (unchanged)
 analysis_frame = tk.LabelFrame(root, text="Analysis Tools")
 analysis_frame.place(x=380, y=510, width=260, height=95)
 
